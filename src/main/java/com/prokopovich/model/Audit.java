@@ -17,7 +17,7 @@ public class Audit {
     @Getter
     private LocalDate date;
     @Getter
-    private String action;
+    private AuditAction action;
 
 
 

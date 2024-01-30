@@ -4,14 +4,17 @@ package com.prokopovich.in;
  * и авторизацию пользователей
  */
 
+import com.prokopovich.model.AuditAction;
 import com.prokopovich.model.User;
 import com.prokopovich.model.UserRole;
-import com.prokopovich.model.Users;
+import com.prokopovich.repo.Users;
 import com.prokopovich.model.Audit;
 import com.prokopovich.service.AuditService;
+import com.prokopovich.service.IntTerminalScanner;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class UserController {
@@ -20,25 +23,27 @@ public class UserController {
      * @return Объект класса User если авторизация или регистрация прошла успешно, иначе null
      */
     public static User start() {
-
         Scanner scanner = new Scanner(System.in);
+
         boolean resume = true;
         User curUser = null;
 
         ArrayList<String> commands = new ArrayList<>();
+
         commands.add("Выход из приложения");
         commands.add("Войти в систему (пользователь уже есть)");
         commands.add("Зарегистрироваться (пользователя пока нету)");
         commands.add("Показать список команд");
 
         while (resume) {
+
             System.out.println("Пожалуйста, введите номер команды: ");
 
             for (int i = 0; i < commands.size(); i++) {
                 System.out.println(i + ". " + commands.get(i));
             }
 
-            int command = scanner.nextInt();
+            int command = IntTerminalScanner.nextInt(scanner);
 
             switch (command) {
                 case 0:
@@ -46,11 +51,11 @@ public class UserController {
                     resume = false;
                     break;
                 case 1:
-                    curUser = singIn();
+                    curUser = singIn().orElse(null);
                     resume = false;
                     break;
                 case 2:
-                    curUser = singUp();
+                    curUser = singUp().orElse(null);
                     resume = false;
                     break;
                 case 3:
@@ -62,15 +67,16 @@ public class UserController {
                     System.out.println("Неверная команда. Пожалуйста, введите корректную команду.");
                     break;
             }
+
         }
         return curUser;
     }
 
     /**
      * Эндпоит авторизации пользователя
-     * @return Объект класса User, если авторизация прошла успешно, иначе null
+     * @return Объект класса Optional<User>, если авторизация прошла успешно, иначе Optional.empty()
      */
-    public static User singIn() {
+    public static Optional<User> singIn() {
         AuditService auditService = AuditService.getInstance();
 
         Scanner scanner = new Scanner(System.in);
@@ -79,49 +85,64 @@ public class UserController {
         System.out.println("Введите имя пользователя:");
         String login = scanner.nextLine();
 
-        User user = usersList.findUserByLogin(login);
-        if (user == null) {
-            System.out.println("Не правильное имя пользователя:");
-            return null;
-        } else {
+        if (login.length() < 4) {
+            System.out.println("Логин должен быть не пустым и содержать минимум 4 символа.");
+            return Optional.empty();
+        }
+
+        try {
+            User user = usersList.findUserByLogin(login);
             System.out.println("Введите пароль:");
             String password = scanner.nextLine();
-            if (user.checkPassword(password)) {
+            if (user.checkLoginPassword(user.getLogin(), password)) {
                 System.out.println("Вы успешно вошли в систему.");
-                auditService.addAudit(new Audit(user, LocalDate.now(),"Вход в систему"));
-                return user;
+                auditService.addAudit(new Audit(user, LocalDate.now(), AuditAction.SIGN_IN));
+                return Optional.of(user);
             } else {
                 System.out.println("Не верный пароль");
-                return null;
+                return Optional.empty();
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Optional.empty();
         }
+
     }
 
     /**
      * Эндпоит регистрации пользователя
-     * @return Объект класса User, если регистрация прошла успешно, иначе null
+     * @return Объект класса Optional<User>, если регистрация прошла успешно, иначе Optional.empty()
      */
-    public static User singUp() {
+    public static Optional<User> singUp() {
         AuditService auditService = AuditService.getInstance();
 
         Scanner scanner = new Scanner(System.in);
         Users usersList = Users.getInstance();
 
-        System.out.println("Введите имя пользователя:");
+        System.out.println("Введите имя пользователя, не менее 4 символа:");
         String newLogin = scanner.nextLine();
 
-        User newUser = usersList.findUserByLogin(newLogin);
-        if (newUser == null) {
-            System.out.println("Введите пароль:");
+        if (newLogin.length() < 4) {
+            System.out.println("Логин должен быть не пустым и содержать минимум 4 символа.");
+            return Optional.empty();
+        }
+
+        try {
+            usersList.findUserByLogin(newLogin);
+            System.out.println("Пользователь с таким именем уже существует");
+            return Optional.empty();
+        } catch (Exception e) {
+            System.out.println("Введите пароль, не менее 4 символа:");
             String newPassword = scanner.nextLine();
+            if (newPassword.length() < 4) {
+                System.out.println("пароль должен быть не пустым и содержать минимум 4 символа.");
+                return Optional.empty();
+            }
             User user = new User(newLogin, newPassword, UserRole.USER);
             usersList.addUser(user);
             System.out.println("Пользователь успешно зарегистрирован");
-            auditService.addAudit(new Audit(user, LocalDate.now(),"Пользователь зарегистрирован"));
-            return user;
-        } else {
-            System.out.println("Пользователь с таким именем уже существует");
-            return null;
+            auditService.addAudit(new Audit(user, LocalDate.now(), AuditAction.SIGN_UP));
+            return Optional.of(user);
         }
     }
 }

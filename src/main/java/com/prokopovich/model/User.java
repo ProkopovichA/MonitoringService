@@ -43,20 +43,6 @@ public class User {
         return loginMatch && passwordMatch;
     }
 
-    /**
-     * Эндпоинт проверки пароля,
-     * позволяет не светить пароль вне класса
-     * @param inPassword - пароль пользователя
-     * @return true - в случае успешной проверки
-     */
-    public boolean checkPassword(String inPassword) {
-        inPassword = inPassword.trim();
-
-        boolean passwordMatch = this.password.equals(inPassword);
-
-        return passwordMatch;
-    }
-
     @Override
     public String toString() {
         return login;

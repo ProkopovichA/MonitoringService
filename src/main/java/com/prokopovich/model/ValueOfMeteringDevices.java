@@ -16,7 +16,7 @@ public class ValueOfMeteringDevices {
     @Getter
     private User user;
     @Getter
-    private TypeOfIndicators typeOfIndicators;
+    private IndicatorType typeOfIndicators;
     @Getter
     private LocalDate dateOfValue;
     @Getter

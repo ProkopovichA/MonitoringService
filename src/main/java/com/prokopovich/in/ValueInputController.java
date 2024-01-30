@@ -8,7 +8,10 @@ package com.prokopovich.in;
 
 import com.prokopovich.model.*;
 import com.prokopovich.model.Audit;
+import com.prokopovich.repo.TypesOfIndicators;
+import com.prokopovich.repo.ValuesOfMeteringDevices;
 import com.prokopovich.service.AuditService;
+import com.prokopovich.service.IntTerminalScanner;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,8 +25,8 @@ public class ValueInputController {
      */
     public static boolean start(User user) {
         AuditService auditService = AuditService.getInstance();
-
         Scanner scanner = new Scanner(System.in);
+
         boolean resume = true;
         ValuesOfMeteringDevices listValuesOfMeteringDevices = ValuesOfMeteringDevices.getInstance();
 
@@ -44,7 +47,7 @@ public class ValueInputController {
                 System.out.println(i + ". " + commands.get(i));
             }
 
-            int command = scanner.nextInt();
+            int command = IntTerminalScanner.nextInt(scanner);
 
             switch (command) {
                 case 0:
@@ -65,14 +68,14 @@ public class ValueInputController {
                         break;
                     }
                     meteringDevicesList.forEach(System.out::println);
-                    auditService.addAudit(new Audit(user, LocalDate.now(),"Вывод показаний"));
+                    auditService.addAudit(new Audit(user, LocalDate.now(),AuditAction.INPUT_VALUE));
                     break;
                 case 3:
                     System.out.println("Введите год");
-                    int year = scanner.nextInt();
+                    int year = IntTerminalScanner.nextInt(scanner);
 
                     System.out.println("Введите месяц");
-                    int month = scanner.nextInt();
+                    int month = IntTerminalScanner.nextInt(scanner);
 
                     List<ValueOfMeteringDevices> meteringDevicesListMonth = listValuesOfMeteringDevices.getValuesForMonthAndYear(user,year,month);
                     if (meteringDevicesListMonth.size() == 0) {
@@ -80,7 +83,7 @@ public class ValueInputController {
                         break;
                     }
                     meteringDevicesListMonth.forEach(System.out::println);
-                    auditService.addAudit(new Audit(user, LocalDate.now(),"Вывод показаний за месяц"));
+                    auditService.addAudit(new Audit(user, LocalDate.now(),AuditAction.MONTHLY_DISPLAY_VALUE));
                     break;
                 case 4:
                     if (!user.getRole().isAdmin()) {
@@ -88,7 +91,7 @@ public class ValueInputController {
                         break;
                     }
                     addNewTypeOfIndicators();
-                    auditService.addAudit(new Audit(user, LocalDate.now(),"Попытка добавления нового вида учета"));
+                    auditService.addAudit(new Audit(user, LocalDate.now(),AuditAction.ADD_NEW_INDICATOR_TYPE));
                     break;
                 default:
                     System.out.println("Неверная команда. Пожалуйста, введите корректную команду.");
@@ -104,10 +107,10 @@ public class ValueInputController {
      */
     public static boolean addValueOfMeteringDevices(User user) {
         AuditService auditService = AuditService.getInstance();
-
         Scanner scanner = new Scanner(System.in);
+
         TypesOfIndicators typesOfIndicators = TypesOfIndicators.getInstance();
-        ArrayList<TypeOfIndicators> listTypesOfIndicators = typesOfIndicators.getTypeOfIndicators();
+        ArrayList<IndicatorType> listTypesOfIndicators = typesOfIndicators.getTypeOfIndicators();
         ValuesOfMeteringDevices listValuesOfMeteringDevices = ValuesOfMeteringDevices.getInstance();
 
         System.out.println("Пожалуйста, введите номер вида показаний: ");
@@ -115,26 +118,26 @@ public class ValueInputController {
         for (int i = 0; i < listTypesOfIndicators.size(); i++) {
             System.out.println(i + ". " + listTypesOfIndicators.get(i));
         }
-        int curNumber = scanner.nextInt();
+        int curNumber = IntTerminalScanner.nextInt(scanner);
 
         if ((curNumber < 0) || (curNumber > listTypesOfIndicators.size() - 1)) {
             System.out.println("Не правильно указан номер.");
             return false;
         }
 
-        TypeOfIndicators curTypeOfIndicators = listTypesOfIndicators.get(curNumber);
+        IndicatorType curTypeOfIndicators = listTypesOfIndicators.get(curNumber);
 
         System.out.println("Текущие значения " + listValuesOfMeteringDevices.getLastValueForUserAndType(user, curTypeOfIndicators));
 
         System.out.println("Пожалуйста, введите новые значения показаний: ");
-        int value = scanner.nextInt();
+        int value = IntTerminalScanner.nextInt(scanner);
 
         if (value < 0) {
             System.out.println("Показания не могут быть меньше нуля.");
             return false;
         }
 
-        auditService.addAudit(new Audit(user, LocalDate.now(),"Ввод показаний"));
+        auditService.addAudit(new Audit(user, LocalDate.now(),AuditAction.INPUT_VALUE));
 
         return listValuesOfMeteringDevices.addValueOfMeteringDevice(new ValueOfMeteringDevices(user, curTypeOfIndicators, LocalDate.now(), value));
 
@@ -147,7 +150,7 @@ public class ValueInputController {
     public static boolean addNewTypeOfIndicators() {
         Scanner scanner = new Scanner(System.in);
         TypesOfIndicators typesOfIndicators = TypesOfIndicators.getInstance();
-        ArrayList<TypeOfIndicators> listTypesOfIndicators = typesOfIndicators.getTypeOfIndicators();
+        ArrayList<IndicatorType> listTypesOfIndicators = typesOfIndicators.getTypeOfIndicators();
         System.out.println("Показания, которые уже есть: ");
 
         for (int i = 0; i < listTypesOfIndicators.size(); i++) {
@@ -162,7 +165,7 @@ public class ValueInputController {
             System.out.println("Название не может быть пустыми");
             return false;
         } else {
-            listTypesOfIndicators.add(new TypeOfIndicators(newName));
+            listTypesOfIndicators.add(new IndicatorType(newName));
             return true;
         }
 

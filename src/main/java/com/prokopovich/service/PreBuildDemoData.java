@@ -8,6 +8,8 @@
 package com.prokopovich.service;
 
 import com.prokopovich.model.*;
+import com.prokopovich.repo.TypesOfIndicators;
+import com.prokopovich.repo.Users;
 
 public class PreBuildDemoData {
     public static void build() {
@@ -32,9 +34,9 @@ public class PreBuildDemoData {
 
         }
 
-        typesOfIndicators.addTypeOfIndicator(new TypeOfIndicators("Электроэнергия"));
-        typesOfIndicators.addTypeOfIndicator(new TypeOfIndicators("Горячая вода"));
-        typesOfIndicators.addTypeOfIndicator(new TypeOfIndicators("Холодная вода"));
+        typesOfIndicators.addTypeOfIndicator(new IndicatorType("Электроэнергия"));
+        typesOfIndicators.addTypeOfIndicator(new IndicatorType("Горячая вода"));
+        typesOfIndicators.addTypeOfIndicator(new IndicatorType("Холодная вода"));
 
     }
 }

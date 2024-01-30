@@ -5,10 +5,12 @@
 
 package com.prokopovich.in;
 
+import com.prokopovich.model.AuditAction;
 import com.prokopovich.model.User;
-import com.prokopovich.model.Users;
+import com.prokopovich.repo.Users;
 import com.prokopovich.model.Audit;
 import com.prokopovich.service.AuditService;
+import com.prokopovich.service.IntTerminalScanner;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,12 +21,10 @@ public class MainController {
      * Запуск основной логики главного контроллера
      * @return true если работа завершена корректно
      */
-    public static boolean Start() {
+    public static boolean start() {
         AuditService auditService = AuditService.getInstance();
-
-
-        Users usersList = Users.getInstance();
         Scanner scanner = new Scanner(System.in);
+
         boolean resume = true;
 
         System.out.println("Добро пожаловать в сервис подачи показаний.");
@@ -43,13 +43,13 @@ public class MainController {
                 System.out.println(i + ". " + commands.get(i));
             }
 
-            int command = scanner.nextInt();
+            int command = IntTerminalScanner.nextInt(scanner);
 
             switch (command) {
                 case 0:
                     System.out.println("Выход из приложения.");
                     if (curUser != null) {
-                        auditService.addAudit(new Audit(curUser, LocalDate.now(),"Выход из приложения."));
+                        auditService.addAudit(new Audit(curUser, LocalDate.now(), AuditAction.SIGN_OUT));
                     }
                     resume = false;
                     break;
