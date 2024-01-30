@@ -5,6 +5,8 @@
  */
 package com.prokopovich.model;
 
+import com.prokopovich.service.OutputHandler;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -60,11 +62,11 @@ public class ValuesOfMeteringDevices {
                         && value.getDateOfValue().getMonthValue() == currentDate.getMonthValue());
 
         if (alreadyAdded) {
-            System.out.println("Для данного пользователя и данного вида показаний в текущем месяце данные уже были добавлены.");
+            OutputHandler.sout("Для данного пользователя и данного вида показаний в текущем месяце данные уже были добавлены.");
             return false;
         } else {
             listValueOfMeteringDevices.add(valueOfMeteringDevice);
-            System.out.println("Данные успешно добавлены.");
+            OutputHandler.sout("Данные успешно добавлены.");
             return true;
         }
     }

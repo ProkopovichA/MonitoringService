@@ -11,6 +11,7 @@ import com.prokopovich.repo.Users;
 import com.prokopovich.model.Audit;
 import com.prokopovich.service.AuditService;
 import com.prokopovich.service.IntTerminalScanner;
+import com.prokopovich.service.OutputHandler;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class MainController {
 
         boolean resume = true;
 
-        System.out.println("Добро пожаловать в сервис подачи показаний.");
+        OutputHandler.sout("Добро пожаловать в сервис подачи показаний.");
         User curUser = null;
 
         ArrayList<String> commands = new ArrayList<>();
@@ -37,17 +38,17 @@ public class MainController {
 
 
         while (resume) {
-            System.out.println("Пожалуйста, введите номер команды: ");
+            OutputHandler.sout("Пожалуйста, введите номер команды: ");
 
             for (int i = 0; i < commands.size(); i++) {
-                System.out.println(i + ". " + commands.get(i));
+                OutputHandler.sout(i + ". " + commands.get(i));
             }
 
             int command = IntTerminalScanner.nextInt(scanner);
 
             switch (command) {
                 case 0:
-                    System.out.println("Выход из приложения.");
+                    OutputHandler.sout("Выход из приложения.");
                     if (curUser != null) {
                         auditService.addAudit(new Audit(curUser, LocalDate.now(), AuditAction.SIGN_OUT));
                     }
@@ -58,13 +59,13 @@ public class MainController {
                     break;
                 case 2:
                     if (curUser == null) {
-                        System.out.println("Сначала надо войти в систему.");
+                        OutputHandler.sout("Сначала надо войти в систему.");
                         break;
                     }
                     ValueInputController.start(curUser);
                     break;
                 default:
-                    System.out.println("Неверная команда. Пожалуйста, введите корректную команду.");
+                    OutputHandler.sout("Неверная команда. Пожалуйста, введите корректную команду.");
                     break;
             }
         }

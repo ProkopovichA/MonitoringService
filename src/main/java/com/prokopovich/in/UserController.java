@@ -11,6 +11,7 @@ import com.prokopovich.repo.Users;
 import com.prokopovich.model.Audit;
 import com.prokopovich.service.AuditService;
 import com.prokopovich.service.IntTerminalScanner;
+import com.prokopovich.service.OutputHandler;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,17 +38,17 @@ public class UserController {
 
         while (resume) {
 
-            System.out.println("Пожалуйста, введите номер команды: ");
+            OutputHandler.sout("Пожалуйста, введите номер команды: ");
 
             for (int i = 0; i < commands.size(); i++) {
-                System.out.println(i + ". " + commands.get(i));
+                OutputHandler.sout(i + ". " + commands.get(i));
             }
 
             int command = IntTerminalScanner.nextInt(scanner);
 
             switch (command) {
                 case 0:
-                    System.out.println("Выход из приложения.");
+                    OutputHandler.sout("Выход из приложения.");
                     resume = false;
                     break;
                 case 1:
@@ -60,11 +61,11 @@ public class UserController {
                     break;
                 case 3:
                     for (String cmd : commands) {
-                        System.out.println(cmd);
+                        OutputHandler.sout(cmd);
                     }
                     break;
                 default:
-                    System.out.println("Неверная команда. Пожалуйста, введите корректную команду.");
+                    OutputHandler.sout("Неверная команда. Пожалуйста, введите корректную команду.");
                     break;
             }
 
@@ -82,28 +83,28 @@ public class UserController {
         Scanner scanner = new Scanner(System.in);
         Users usersList = Users.getInstance();
 
-        System.out.println("Введите имя пользователя:");
+        OutputHandler.sout("Введите имя пользователя:");
         String login = scanner.nextLine();
 
         if (login.length() < 4) {
-            System.out.println("Логин должен быть не пустым и содержать минимум 4 символа.");
+            OutputHandler.sout("Логин должен быть не пустым и содержать минимум 4 символа.");
             return Optional.empty();
         }
 
         try {
             User user = usersList.findUserByLogin(login);
-            System.out.println("Введите пароль:");
+            OutputHandler.sout("Введите пароль:");
             String password = scanner.nextLine();
             if (user.checkLoginPassword(user.getLogin(), password)) {
-                System.out.println("Вы успешно вошли в систему.");
+                OutputHandler.sout("Вы успешно вошли в систему.");
                 auditService.addAudit(new Audit(user, LocalDate.now(), AuditAction.SIGN_IN));
                 return Optional.of(user);
             } else {
-                System.out.println("Не верный пароль");
+                OutputHandler.sout("Не верный пароль");
                 return Optional.empty();
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            OutputHandler.sout(e.getMessage());
             return Optional.empty();
         }
 
@@ -119,28 +120,28 @@ public class UserController {
         Scanner scanner = new Scanner(System.in);
         Users usersList = Users.getInstance();
 
-        System.out.println("Введите имя пользователя, не менее 4 символа:");
+        OutputHandler.sout("Введите имя пользователя, не менее 4 символа:");
         String newLogin = scanner.nextLine();
 
         if (newLogin.length() < 4) {
-            System.out.println("Логин должен быть не пустым и содержать минимум 4 символа.");
+            OutputHandler.sout("Логин должен быть не пустым и содержать минимум 4 символа.");
             return Optional.empty();
         }
 
         try {
             usersList.findUserByLogin(newLogin);
-            System.out.println("Пользователь с таким именем уже существует");
+            OutputHandler.sout("Пользователь с таким именем уже существует");
             return Optional.empty();
         } catch (Exception e) {
-            System.out.println("Введите пароль, не менее 4 символа:");
+            OutputHandler.sout("Введите пароль, не менее 4 символа:");
             String newPassword = scanner.nextLine();
             if (newPassword.length() < 4) {
-                System.out.println("пароль должен быть не пустым и содержать минимум 4 символа.");
+                OutputHandler.sout("пароль должен быть не пустым и содержать минимум 4 символа.");
                 return Optional.empty();
             }
             User user = new User(newLogin, newPassword, UserRole.USER);
             usersList.addUser(user);
-            System.out.println("Пользователь успешно зарегистрирован");
+            OutputHandler.sout("Пользователь успешно зарегистрирован");
             auditService.addAudit(new Audit(user, LocalDate.now(), AuditAction.SIGN_UP));
             return Optional.of(user);
         }
