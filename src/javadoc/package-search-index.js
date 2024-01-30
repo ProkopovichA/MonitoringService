@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.prokopovich"},{"l":"com.prokopovich.in"},{"l":"com.prokopovich.model"},{"l":"com.prokopovich.service"}];updateSearchResults();
