@@ -7,9 +7,7 @@ import com.prokopovich.repo.AuditRepo;
 public class Main {
 
     public static void main(String[] args) {
-       //MainController.start();
-        AuditRepo.getInstance().getAuditList().stream()
-                .forEach(auditLog -> System.out.println(auditLog));;
+       MainController.start();
     }
 
 }
