@@ -7,10 +7,12 @@ package com.prokopovich.model;
 import lombok.Getter;
 import lombok.AllArgsConstructor;
 
-import com.prokopovich.model.User;
+import lombok.ToString;
+
 import java.time.LocalDate;
 
 @AllArgsConstructor
+@ToString
 public class Audit {
     @Getter
     private User user;

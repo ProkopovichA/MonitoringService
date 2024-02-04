@@ -10,6 +10,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class IndicatorType {
     @Getter
+    private int id;
+
+    @Getter
     private String typeName;
 
     @Override

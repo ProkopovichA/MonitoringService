@@ -7,9 +7,8 @@ package com.prokopovich.in;
 
 import com.prokopovich.model.AuditAction;
 import com.prokopovich.model.User;
-import com.prokopovich.repo.Users;
 import com.prokopovich.model.Audit;
-import com.prokopovich.service.AuditService;
+import com.prokopovich.repo.AuditRepo;
 import com.prokopovich.service.IntTerminalScanner;
 import com.prokopovich.service.OutputHandler;
 
@@ -23,7 +22,7 @@ public class MainController {
      * @return true если работа завершена корректно
      */
     public static boolean start() {
-        AuditService auditService = AuditService.getInstance();
+        AuditRepo auditRepo = AuditRepo.getInstance();
         Scanner scanner = new Scanner(System.in);
 
         boolean resume = true;
@@ -50,7 +49,7 @@ public class MainController {
                 case 0:
                     OutputHandler.sout("Выход из приложения.");
                     if (curUser != null) {
-                        auditService.addAudit(new Audit(curUser, LocalDate.now(), AuditAction.SIGN_OUT));
+                        auditRepo.addAudit(new Audit(curUser, LocalDate.now(), AuditAction.SIGN_OUT));
                     }
                     resume = false;
                     break;
@@ -72,4 +71,5 @@ public class MainController {
 
         return true;
     }
+
 }

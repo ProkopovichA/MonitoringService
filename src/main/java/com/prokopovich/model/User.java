@@ -11,7 +11,10 @@ import lombok.Getter;
 
 public class User {
     @Getter
+    private int id;
+    @Getter
     private String login;
+    @Getter
     private String password;
     @Getter
     private UserRole role;
@@ -19,7 +22,8 @@ public class User {
     //Я решил то в данной версии приложения
     //не хочу учитывать пробелы в login и password
 
-    public User(String login, String password, UserRole role) {
+    public User(int id,String login, String password, UserRole role) {
+        this.id = id;
         this.login = login.trim();
         this.password = password.trim();
         this.role = role;

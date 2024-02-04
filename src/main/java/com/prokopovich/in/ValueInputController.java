@@ -8,9 +8,9 @@ package com.prokopovich.in;
 
 import com.prokopovich.model.*;
 import com.prokopovich.model.Audit;
-import com.prokopovich.repo.TypesOfIndicators;
-import com.prokopovich.repo.ValuesOfMeteringDevices;
-import com.prokopovich.service.AuditService;
+import com.prokopovich.repo.IndicatorTypeRepo;
+import com.prokopovich.repo.ValuesOfMeteringDevicesRepo;
+import com.prokopovich.repo.AuditRepo;
 import com.prokopovich.service.IntTerminalScanner;
 import com.prokopovich.service.OutputHandler;
 
@@ -25,11 +25,11 @@ public class ValueInputController {
      * @return true если работа завершена корректно
      */
     public static boolean start(User user) {
-        AuditService auditService = AuditService.getInstance();
+        AuditRepo auditRepo = AuditRepo.getInstance();
         Scanner scanner = new Scanner(System.in);
 
         boolean resume = true;
-        ValuesOfMeteringDevices listValuesOfMeteringDevices = ValuesOfMeteringDevices.getInstance();
+        ValuesOfMeteringDevicesRepo listValuesOfMeteringDevices = ValuesOfMeteringDevicesRepo.getInstance();
 
 
         ArrayList<String> commands = new ArrayList<>();
@@ -69,7 +69,7 @@ public class ValueInputController {
                         break;
                     }
                     meteringDevicesList.forEach(System.out::println);
-                    auditService.addAudit(new Audit(user, LocalDate.now(),AuditAction.INPUT_VALUE));
+                    auditRepo.addAudit(new Audit(user, LocalDate.now(),AuditAction.INPUT_VALUE));
                     break;
                 case 3:
                     OutputHandler.sout("Введите год");
@@ -84,7 +84,7 @@ public class ValueInputController {
                         break;
                     }
                     meteringDevicesListMonth.forEach(System.out::println);
-                    auditService.addAudit(new Audit(user, LocalDate.now(),AuditAction.MONTHLY_DISPLAY_VALUE));
+                    auditRepo.addAudit(new Audit(user, LocalDate.now(),AuditAction.MONTHLY_DISPLAY_VALUE));
                     break;
                 case 4:
                     if (!user.getRole().isAdmin()) {
@@ -92,7 +92,7 @@ public class ValueInputController {
                         break;
                     }
                     addNewTypeOfIndicators();
-                    auditService.addAudit(new Audit(user, LocalDate.now(),AuditAction.ADD_NEW_INDICATOR_TYPE));
+                    auditRepo.addAudit(new Audit(user, LocalDate.now(),AuditAction.ADD_NEW_INDICATOR_TYPE));
                     break;
                 default:
                     OutputHandler.sout("Неверная команда. Пожалуйста, введите корректную команду.");
@@ -107,12 +107,12 @@ public class ValueInputController {
      * @return true если показания успешно добавлены
      */
     public static boolean addValueOfMeteringDevices(User user) {
-        AuditService auditService = AuditService.getInstance();
+        AuditRepo auditRepo = AuditRepo.getInstance();
         Scanner scanner = new Scanner(System.in);
 
-        TypesOfIndicators typesOfIndicators = TypesOfIndicators.getInstance();
+        IndicatorTypeRepo typesOfIndicators = IndicatorTypeRepo.getInstance();
         ArrayList<IndicatorType> listTypesOfIndicators = typesOfIndicators.getTypeOfIndicators();
-        ValuesOfMeteringDevices listValuesOfMeteringDevices = ValuesOfMeteringDevices.getInstance();
+        ValuesOfMeteringDevicesRepo listValuesOfMeteringDevices = ValuesOfMeteringDevicesRepo.getInstance();
 
         OutputHandler.sout("Пожалуйста, введите номер вида показаний: ");
 
@@ -138,7 +138,7 @@ public class ValueInputController {
             return false;
         }
 
-        auditService.addAudit(new Audit(user, LocalDate.now(),AuditAction.INPUT_VALUE));
+        auditRepo.addAudit(new Audit(user, LocalDate.now(),AuditAction.INPUT_VALUE));
 
         return listValuesOfMeteringDevices.addValueOfMeteringDevice(new ValueOfMeteringDevices(user, curTypeOfIndicators, LocalDate.now(), value));
 
@@ -150,7 +150,7 @@ public class ValueInputController {
      */
     public static boolean addNewTypeOfIndicators() {
         Scanner scanner = new Scanner(System.in);
-        TypesOfIndicators typesOfIndicators = TypesOfIndicators.getInstance();
+        IndicatorTypeRepo typesOfIndicators = IndicatorTypeRepo.getInstance();
         ArrayList<IndicatorType> listTypesOfIndicators = typesOfIndicators.getTypeOfIndicators();
         OutputHandler.sout("Показания, которые уже есть: ");
 
@@ -166,7 +166,7 @@ public class ValueInputController {
             OutputHandler.sout("Название не может быть пустыми");
             return false;
         } else {
-            listTypesOfIndicators.add(new IndicatorType(newName));
+            typesOfIndicators.addTypeOfIndicator(new IndicatorType(777, newName));
             return true;
         }
 
