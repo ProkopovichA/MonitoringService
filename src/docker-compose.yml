@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:13.3
+    restart: always
+    environment:
+      POSTGRES_DB: "service"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "Root_123"
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql:Z
+      - postgres-db-data:/var/lib/postgresql/data
+    networks:
+      - general
+    volumes:
+  postgres-db-data:
+  networks:
+    general:
+      driver: bridge
