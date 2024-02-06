@@ -8,9 +8,12 @@ package com.prokopovich.in;
 
 import com.prokopovich.model.*;
 import com.prokopovich.model.Audit;
+import com.prokopovich.repo.impl.AuditRepoImpl;
+import com.prokopovich.repo.impl.IndicatorTypeRepoImpl;
 import com.prokopovich.repo.IndicatorTypeRepo;
 import com.prokopovich.repo.ValuesOfMeteringDevicesRepo;
 import com.prokopovich.repo.AuditRepo;
+import com.prokopovich.repo.impl.ValuesOfMeteringDevicesRepoImpl;
 import com.prokopovich.service.IntTerminalScanner;
 import com.prokopovich.service.OutputHandler;
 
@@ -25,11 +28,11 @@ public class ValueInputController {
      * @return true если работа завершена корректно
      */
     public static boolean start(User user) {
-        AuditRepo auditRepo = AuditRepo.getInstance();
+        AuditRepo auditRepo = AuditRepoImpl.getInstance();
         Scanner scanner = new Scanner(System.in);
 
         boolean resume = true;
-        ValuesOfMeteringDevicesRepo listValuesOfMeteringDevices = ValuesOfMeteringDevicesRepo.getInstance();
+        ValuesOfMeteringDevicesRepo listValuesOfMeteringDevices = ValuesOfMeteringDevicesRepoImpl.getInstance();
 
 
         ArrayList<String> commands = new ArrayList<>();
@@ -107,12 +110,12 @@ public class ValueInputController {
      * @return true если показания успешно добавлены
      */
     public static boolean addValueOfMeteringDevices(User user) {
-        AuditRepo auditRepo = AuditRepo.getInstance();
+        AuditRepo auditRepo = AuditRepoImpl.getInstance();
         Scanner scanner = new Scanner(System.in);
 
-        IndicatorTypeRepo typesOfIndicators = IndicatorTypeRepo.getInstance();
+        IndicatorTypeRepo typesOfIndicators = IndicatorTypeRepoImpl.getInstance();
         ArrayList<IndicatorType> listTypesOfIndicators = typesOfIndicators.getTypeOfIndicators();
-        ValuesOfMeteringDevicesRepo listValuesOfMeteringDevices = ValuesOfMeteringDevicesRepo.getInstance();
+        ValuesOfMeteringDevicesRepo listValuesOfMeteringDevices = ValuesOfMeteringDevicesRepoImpl.getInstance();
 
         OutputHandler.sout("Пожалуйста, введите номер вида показаний: ");
 
@@ -150,7 +153,7 @@ public class ValueInputController {
      */
     public static boolean addNewTypeOfIndicators() {
         Scanner scanner = new Scanner(System.in);
-        IndicatorTypeRepo typesOfIndicators = IndicatorTypeRepo.getInstance();
+        IndicatorTypeRepo typesOfIndicators = IndicatorTypeRepoImpl.getInstance();
         ArrayList<IndicatorType> listTypesOfIndicators = typesOfIndicators.getTypeOfIndicators();
         OutputHandler.sout("Показания, которые уже есть: ");
 

@@ -9,6 +9,7 @@ import com.prokopovich.model.AuditAction;
 import com.prokopovich.model.User;
 import com.prokopovich.model.Audit;
 import com.prokopovich.repo.AuditRepo;
+import com.prokopovich.repo.impl.AuditRepoImpl;
 import com.prokopovich.service.IntTerminalScanner;
 import com.prokopovich.service.OutputHandler;
 
@@ -19,10 +20,11 @@ import java.util.Scanner;
 public class MainController {
     /**
      * Запуск основной логики главного контроллера
+     *
      * @return true если работа завершена корректно
      */
     public static boolean start() {
-        AuditRepo auditRepo = AuditRepo.getInstance();
+        AuditRepo auditRepo = AuditRepoImpl.getInstance();
         Scanner scanner = new Scanner(System.in);
 
         boolean resume = true;

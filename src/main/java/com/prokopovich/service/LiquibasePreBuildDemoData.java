@@ -16,6 +16,7 @@ public class LiquibasePreBuildDemoData {
     public static final String URL = DatabaseConfig.getDatabaseUrlModel();
     public static final String USER_NAME = DatabaseConfig.getDatabaseUsername();
     public static final String PASSWORD = DatabaseConfig.getDatabasePassword();
+
     public static void main(String[] args) {
         try {
             Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);

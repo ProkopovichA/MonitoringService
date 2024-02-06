@@ -1,5 +1,5 @@
 /**
- *Класс типы показаний (типы приборов учета)
+ * Класс типы показаний (типы приборов учета)
  */
 
 package com.prokopovich.model;
@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 public class IndicatorType {
     @Getter
     private int id;
-
     @Getter
     private String typeName;
 

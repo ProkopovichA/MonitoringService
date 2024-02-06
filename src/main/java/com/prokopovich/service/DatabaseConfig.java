@@ -24,6 +24,7 @@ public class DatabaseConfig {
 
     /**
      * Метод возвращает usr для схемы service
+     *
      * @return
      */
     public static String getDatabaseUrlService() {

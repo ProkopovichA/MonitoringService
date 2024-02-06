@@ -22,7 +22,7 @@ public class User {
     //Я решил то в данной версии приложения
     //не хочу учитывать пробелы в login и password
 
-    public User(int id,String login, String password, UserRole role) {
+    public User(int id, String login, String password, UserRole role) {
         this.id = id;
         this.login = login.trim();
         this.password = password.trim();
@@ -32,7 +32,8 @@ public class User {
     /**
      * Эндпоинт проверки связки пользователь - пароль,
      * позволяет не светить пароль вне класса
-     * @param inLogin - логин пользователя
+     *
+     * @param inLogin    - логин пользователя
      * @param inPassword - пароль пользователя
      * @return true - в случае успешной проверки
      */
