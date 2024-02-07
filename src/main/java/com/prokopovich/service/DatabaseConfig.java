@@ -18,6 +18,10 @@ public class DatabaseConfig {
         }
     }
 
+    public static String getDatabaseUrl() {
+        return properties.getProperty("db.url");
+    }
+
     public static String getDatabaseUrlModel() {
         return properties.getProperty("db.url") + "?currentSchema=model";
     }

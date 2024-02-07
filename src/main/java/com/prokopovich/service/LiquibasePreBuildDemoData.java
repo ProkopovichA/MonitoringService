@@ -13,7 +13,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class LiquibasePreBuildDemoData {
-    public static final String URL = DatabaseConfig.getDatabaseUrlModel();
+    public static final String URL = DatabaseConfig.getDatabaseUrl();
     public static final String USER_NAME = DatabaseConfig.getDatabaseUsername();
     public static final String PASSWORD = DatabaseConfig.getDatabasePassword();
 
@@ -22,7 +22,7 @@ public class LiquibasePreBuildDemoData {
             Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             Liquibase liquibase =
-                    new Liquibase("db/changelog/changelogModel.xml", new ClassLoaderResourceAccessor(), database);
+                    new Liquibase("db/changelog/changelog.xml", new ClassLoaderResourceAccessor(), database);
             liquibase.update();
             System.out.println("Migration is completed successfully");
 
