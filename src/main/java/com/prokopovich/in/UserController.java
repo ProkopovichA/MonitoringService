@@ -7,11 +7,14 @@ package com.prokopovich.in;
 import com.prokopovich.model.AuditAction;
 import com.prokopovich.model.User;
 import com.prokopovich.model.UserRole;
-import com.prokopovich.repo.Users;
+import com.prokopovich.repo.impl.AuditRepoImpl;
+import com.prokopovich.repo.UsersRepo;
 import com.prokopovich.model.Audit;
-import com.prokopovich.service.AuditService;
+import com.prokopovich.repo.AuditRepo;
+import com.prokopovich.repo.impl.UserRepoImpl;
 import com.prokopovich.service.IntTerminalScanner;
 import com.prokopovich.service.OutputHandler;
+import com.prokopovich.service.UserService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ import java.util.Scanner;
 public class UserController {
     /**
      * Запуск основной логики главного контроллера
+     *
      * @return Объект класса User если авторизация или регистрация прошла успешно, иначе null
      */
     public static User start() {
@@ -56,8 +60,8 @@ public class UserController {
                     resume = false;
                     break;
                 case 2:
-                    curUser = singUp().orElse(null);
-                    resume = false;
+                    singUp();
+                    resume = true;
                     break;
                 case 3:
                     for (String cmd : commands) {
@@ -75,13 +79,14 @@ public class UserController {
 
     /**
      * Эндпоит авторизации пользователя
+     *
      * @return Объект класса Optional<User>, если авторизация прошла успешно, иначе Optional.empty()
      */
     public static Optional<User> singIn() {
-        AuditService auditService = AuditService.getInstance();
+        AuditRepo auditRepo = AuditRepoImpl.getInstance();
 
         Scanner scanner = new Scanner(System.in);
-        Users usersList = Users.getInstance();
+        UsersRepo usersList = UserRepoImpl.getInstance();
 
         OutputHandler.sout("Введите имя пользователя:");
         String login = scanner.nextLine();
@@ -95,14 +100,7 @@ public class UserController {
             User user = usersList.findUserByLogin(login);
             OutputHandler.sout("Введите пароль:");
             String password = scanner.nextLine();
-            if (user.checkLoginPassword(user.getLogin(), password)) {
-                OutputHandler.sout("Вы успешно вошли в систему.");
-                auditService.addAudit(new Audit(user, LocalDate.now(), AuditAction.SIGN_IN));
-                return Optional.of(user);
-            } else {
-                OutputHandler.sout("Не верный пароль");
-                return Optional.empty();
-            }
+            return UserService.singIn(user,password);
         } catch (Exception e) {
             OutputHandler.sout(e.getMessage());
             return Optional.empty();
@@ -112,13 +110,12 @@ public class UserController {
 
     /**
      * Эндпоит регистрации пользователя
+     *
      * @return Объект класса Optional<User>, если регистрация прошла успешно, иначе Optional.empty()
      */
     public static Optional<User> singUp() {
-        AuditService auditService = AuditService.getInstance();
-
         Scanner scanner = new Scanner(System.in);
-        Users usersList = Users.getInstance();
+        UsersRepo usersList = UserRepoImpl.getInstance();
 
         OutputHandler.sout("Введите имя пользователя, не менее 4 символа:");
         String newLogin = scanner.nextLine();
@@ -139,11 +136,9 @@ public class UserController {
                 OutputHandler.sout("пароль должен быть не пустым и содержать минимум 4 символа.");
                 return Optional.empty();
             }
-            User user = new User(newLogin, newPassword, UserRole.USER);
-            usersList.addUser(user);
-            OutputHandler.sout("Пользователь успешно зарегистрирован");
-            auditService.addAudit(new Audit(user, LocalDate.now(), AuditAction.SIGN_UP));
-            return Optional.of(user);
+
+            return UserService.singUp(newLogin,newPassword);
+
         }
     }
 }

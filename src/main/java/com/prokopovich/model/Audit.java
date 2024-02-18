@@ -6,11 +6,12 @@ package com.prokopovich.model;
 
 import lombok.Getter;
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 
-import com.prokopovich.model.User;
 import java.time.LocalDate;
 
 @AllArgsConstructor
+@ToString
 public class Audit {
     @Getter
     private User user;
@@ -18,7 +19,4 @@ public class Audit {
     private LocalDate date;
     @Getter
     private AuditAction action;
-
-
-
 }

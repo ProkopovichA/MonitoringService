@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+    logicalFilePath="db/changelog.xml">
+    <changeSet id="005-insert-data" author="aprokopovich">
+        <insert tableName="users" schemaName="model">
+            <column name="login" value="Admin"/>
+            <column name="password" value="AdmQwe"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+        <insert tableName="users" schemaName="model">
+            <column name="login" value="User1"/>
+            <column name="password" value="Pass1"/>
+            <column name="role" value="USER"/>
+        </insert>
+        <insert tableName="users" schemaName="model">
+            <column name="login" value="User2"/>
+            <column name="password" value="Pass2"/>
+            <column name="role" value="USER"/>
+        </insert>
+        <insert tableName="users" schemaName="model">
+            <column name="login" value="User3"/>
+            <column name="password" value="Pass3"/>
+            <column name="role" value="USER"/>
+        </insert>
+        <insert tableName="indicator_type" schemaName="model">
+            <column name="name" value="Электроэнергия"/>
+        </insert>
+        <insert tableName="indicator_type" schemaName="model">
+            <column name="name" value="Горячая вода"/>
+        </insert>
+        <insert tableName="indicator_type" schemaName="model">
+            <column name="name" value="Холодная вода"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

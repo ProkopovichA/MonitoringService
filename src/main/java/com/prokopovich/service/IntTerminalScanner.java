@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class IntTerminalScanner {
     /**
      * Сервисный метод для ввода номера команды в консоль
+     *
      * @return int если значение команды введено корректно то возвращается оно, если нет то -1
      */
     public static int nextInt(Scanner scanner) {
